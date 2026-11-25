@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f7f4">
+  <meta name="description" content="Buffer Lab is an interactive video streaming and buffering experiment.">
+  <title>BUFFER LAB — What happens between Play and Playback</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;650;700;750&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="Buffer Lab home"><span class="brand-mark">B.</span><span><strong>BUFFER LAB</strong><small>Interactive streaming experiment</small></span></a>
+    <nav aria-label="Main navigation">
+      <a href="#how-it-works">How it works</a><a href="#experiments">Experiments</a><a href="#about">About</a>
+    </nav>
+    <a class="header-status" href="#simulator"><span class="live-dot"></span> SIMULATOR READY</a>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="eyebrow-line"></span> INTERACTIVE NETWORK SIMULATOR</p>
+        <h1>Why does your<br><span>video buffer?</span></h1>
+        <p class="hero-description">Your video isn't downloading all at once. Discover how data arrives, gets stored and disappears during playback.</p>
+        <div class="hero-actions"><a class="button button-primary" href="#simulator">Run an experiment <span aria-hidden="true">↘</span></a><span class="hero-note">A hands-on experiment · about 2 minutes</span></div>
+      </div>
+      <div class="hero-visual" aria-label="Illustration of video data flowing into a buffer and player">
+        <div class="visual-topline"><span>DATA FLOW / 001</span><span>LIVE MODEL</span></div>
+        <div class="flow-visual">
+          <div class="flow-node source-node"><span class="node-icon">↗</span><strong>NETWORK</strong><small>Incoming data</small></div>
+          <div class="flow-connector"><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="flow-node buffer-node"><span class="buffer-glyph"><i></i><i></i><i></i><i></i></span><strong>BUFFER</strong><small>Stored video</small></div>
+          <div class="flow-connector"><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="flow-node player-node"><span class="play-glyph">▶</span><strong>PLAYER</strong><small>Playback</small></div>
+        </div>
+        <div class="visual-foot"><span>PACKETS IN TRANSIT</span><span class="mono">D → B → P</span></div>
+      </div>
+    </section>
+
+    <section class="simulator-section section-wrap" id="simulator">
+      <div class="section-heading">
+        <div><p class="eyebrow">01 / THE LAB</p><h2>Can your internet keep up?</h2><p class="section-subtitle">Try this: set your internet speed below the video bitrate and press Play.</p></div>
+        <div class="experiment-id"><span>EXPERIMENT</span><strong>BL-001</strong></div>
+      </div>
+
+      <div class="lab-grid">
+        <section class="player-panel panel" aria-label="Simulated video player">
+          <div class="panel-heading"><span>VIDEO PLAYER</span><span class="mono" id="playerState">READY</span></div>
+          <div class="video-screen" id="videoScreen">
+            <canvas id="sceneCanvas" aria-label="Procedural abstract video scene"></canvas>
+            <div class="screen-overlay">
+              <div class="screen-top"><span class="screen-chip">SIMULATED STREAM</span><span class="mono" id="screenQuality">1080p</span></div>
+              <div class="screen-center"><div class="screen-play" id="screenPlay">▶</div><div class="screen-message" id="screenMessage">Ready when you are</div></div>
+              <div class="screen-bottom"><span class="mono" id="screenTime">00:00 / 01:30</span><span class="screen-indicator"><i></i> <span id="screenStatus">READY</span></span></div>
+            </div>
+          </div>
+          <div class="timeline-wrap"><div class="timeline-track"><div class="timeline-progress" id="timelineProgress"></div></div><div class="timeline-labels"><span id="currentTime">00:00</span><span>01:30</span></div></div>
+          <div class="player-controls">
+            <div class="control-buttons">
+              <button class="icon-button primary-control" id="playBtn" aria-label="Play">▶</button>
+              <button class="icon-button" id="pauseBtn" aria-label="Pause" title="Pause">Ⅱ</button>
+              <button class="icon-button" id="resetBtn" aria-label="Reset simulation" title="Reset">↺</button>
+            </div>
+            <span class="player-hint" id="playerHint">Press play to start the experiment</span>
+          </div>
+        </section>
+
+        <section class="config-panel panel" aria-label="Network configuration">
+          <div class="panel-heading"><span>NETWORK CONFIGURATION</span><span class="config-indicator"><i></i> CONTROLS LIVE</span></div>
+          <div class="sliders">
+            <div class="slider-control">
+              <div class="slider-heading"><label for="downloadSpeed">Download speed</label><output id="downloadValue" for="downloadSpeed">2.0 <small>Mbps</small></output></div>
+              <input id="downloadSpeed" type="range" min="0.5" max="50" step="0.5" value="2">
+              <div class="slider-foot"><span>0.5 Mbps</span><span>How quickly data arrives from the internet.</span><span>50 Mbps</span></div>
+            </div>
+            <div class="slider-control">
+              <div class="slider-heading"><label for="bitrate">Video bitrate</label><output id="bitrateValue" for="bitrate">5.0 <small>Mbps</small></output></div>
+              <input id="bitrate" type="range" min="0.5" max="25" step="0.5" value="5">
+              <div class="slider-foot"><span>0.5 Mbps</span><span>How much data the video consumes every second.</span><span>25 Mbps</span></div>
+            </div>
+            <div class="slider-control">
+              <div class="slider-heading"><label for="capacity">Buffer capacity</label><output id="capacityValue" for="capacity">30 <small>sec</small></output></div>
+              <input id="capacity" type="range" min="5" max="60" step="1" value="30">
+              <div class="slider-foot"><span>5 sec</span><span>How much video can be stored ahead.</span><span>60 sec</span></div>
+            </div>
+            <div class="slider-control">
+              <div class="slider-heading"><label for="stability">Network stability</label><output id="stabilityValue" for="stability">90 <small>%</small></output></div>
+              <input id="stability" type="range" min="0" max="100" step="5" value="90">
+              <div class="slider-foot"><span>Unstable</span><span>How consistently data arrives.</span><span>Stable</span></div>
+            </div>
+          </div>
+          <div class="preset-area"><div class="preset-title">QUICK CONFIGURATIONS</div><div class="preset-grid">
+            <button class="preset" data-preset="fast"><strong>Fast connection</strong><span>20 / 5 Mbps</span></button>
+            <button class="preset" data-preset="slow"><strong>Slow connection</strong><span>2 / 5 Mbps</span></button>
+            <button class="preset" data-preset="quality"><strong>High quality</strong><span>8 / 12 Mbps</span></button>
+            <button class="preset" data-preset="balanced"><strong>Balanced</strong><span>8 / 5 Mbps</span></button>
+          </div><button class="outage-button" id="outageBtn">↯ &nbsp; Trigger 8-second internet outage</button></div>
+        </section>
+      </div>
+
+      <section class="buffer-panel panel">
+        <div class="buffer-top"><div><p class="eyebrow">LIVE BUFFER</p><h3>Stored video data</h3></div><div class="buffer-number"><strong id="bufferValue">0.0</strong><span> / <span id="bufferMax">30</span> sec</span></div></div>
+        <div class="buffer-track" role="progressbar" aria-label="Buffered video" aria-valuemin="0" aria-valuemax="30" aria-valuenow="0" id="bufferProgress"><div class="buffer-fill" id="bufferFill"></div><div class="buffer-marker"></div></div>
+        <div class="buffer-meta"><span><i class="legend-dot healthy"></i> BUFFER LEVEL <strong id="bufferPercent">0%</strong></span><span>CAPACITY <strong id="capacityMeta">30 sec</strong></span><span>BUFFER HEALTH <strong id="bufferHealth">EMPTY</strong></span></div>
+        <div class="data-flow-row">
+          <div class="flow-metric"><span class="metric-label">INCOMING DATA</span><strong id="incomingRate">0.40×</strong><small>download / bitrate</small></div>
+          <div class="flow-arrow"><span></span><span></span><span></span></div>
+          <div class="flow-buffer"><span class="metric-label">BUFFER</span><div class="mini-buffer" id="miniBuffer"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><small>temporary storage</small></div>
+          <div class="flow-arrow"><span></span><span></span><span></span></div>
+          <div class="flow-metric"><span class="metric-label">PLAYBACK</span><strong id="outgoingRate">1.00×</strong><small>consumption rate</small></div>
+        </div>
+      </section>
+
+      <section class="analytics-grid">
+        <div class="panel chart-panel"><div class="panel-heading"><span>BUFFER LEVEL OVER TIME</span><span class="chart-legend"><i></i> BUFFER (SEC)</span></div><div class="chart-wrap"><canvas id="bufferChart" aria-label="Graph of buffer level over simulation time"></canvas></div><div class="chart-axis"><span>SIMULATION TIME →</span><span id="chartRange">0–30 SEC</span></div></div>
+        <div class="panel stats-panel"><div class="panel-heading"><span>LIVE STATISTICS</span><span class="mono">REAL-TIME</span></div><div class="stats-grid">
+          <div class="stat"><span>DOWNLOAD SPEED</span><strong id="statDownload">2.0 <small>Mbps</small></strong></div>
+          <div class="stat"><span>VIDEO BITRATE</span><strong id="statBitrate">5.0 <small>Mbps</small></strong></div>
+          <div class="stat"><span>PLAYBACK TIME</span><strong id="statPlayback">00:00</strong></div>
+          <div class="stat"><span>SIMULATION TIME</span><strong id="statElapsed">00:00</strong></div>
+          <div class="stat"><span>BUFFERING EVENTS</span><strong id="statEvents">0</strong></div>
+          <div class="stat"><span>TOTAL BUFFERING</span><strong id="statBuffering">0.0 <small>sec</small></strong></div>
+        </div><div class="exhaustion"><span>EST. TIME TO BUFFER EMPTY</span><strong id="statExhaustion">—</strong></div></div>
+      </section>
+      <div class="comparison-strip panel"><div><span class="eyebrow">NETWORK VS VIDEO</span><strong id="comparisonTitle">Your network cannot sustain this quality.</strong><small id="comparisonText">Incoming data is slower than playback consumption.</small></div><div class="comparison-bars"><div><span>DOWNLOAD</span><i><b id="downloadBar"></b></i></div><div><span>BITRATE</span><i><b id="bitrateBar"></b></i></div></div><div class="ratio-value"><strong id="ratioValue">0.40×</strong><span>DOWNLOAD / BITRATE</span></div></div>
+    </section>
+
+    <section class="deeper-section section-wrap" id="experiments">
+      <div class="section-heading"><div><p class="eyebrow">02 / GO DEEPER</p><h2>Change one variable.</h2><p class="section-subtitle">Explore the edge cases that shape a streaming session.</p></div></div>
+      <div class="deep-grid">
+        <article class="deep-card"><span class="deep-index">EXPERIMENT 01</span><h3>Internet outage</h3><p>Cut the connection and watch the buffer act as a temporary reserve. Playback can continue until stored video runs out.</p><div class="deep-readout"><span>OUTAGE STATUS</span><strong id="outageStatus">Network online</strong></div><button class="text-button" id="deepOutageBtn">Trigger outage ↗</button></article>
+        <article class="deep-card"><span class="deep-index">EXPERIMENT 02</span><h3>Video quality</h3><p>Higher quality usually needs a higher bitrate. The illustrative values below are not universal encoding standards.</p><label class="select-label" for="qualitySelect">SELECT QUALITY</label><select id="qualitySelect"><option value="1.5">480p · 1.5 Mbps</option><option value="3">720p · 3 Mbps</option><option value="5" selected>1080p · 5 Mbps</option><option value="12">1440p · 12 Mbps</option></select></article>
+        <article class="deep-card"><span class="deep-index">EXPERIMENT 03</span><h3>Unstable network</h3><p>Lower stability to introduce reproducible speed fluctuations around your configured download speed.</p><div class="deep-readout"><span>INSTANT SPEED</span><strong id="instantSpeed">2.0 Mbps</strong></div><small class="seed-note">Repeatable sequence · seed 417</small></article>
+        <article class="deep-card"><span class="deep-index">EXPERIMENT 04</span><h3>How much buffer?</h3><p>A larger reserve can cover short interruptions, but takes longer to fill. Compare the capacity settings.</p><div class="capacity-choices"><button data-capacity="10">10 sec</button><button data-capacity="30" class="selected">30 sec</button><button data-capacity="60">60 sec</button></div><small class="seed-note">Capacity changes apply immediately.</small></article>
+      </div>
+    </section>
+
+    <section class="how-section section-wrap" id="how-it-works">
+      <div class="section-heading"><div><p class="eyebrow">03 / THE MECHANISM</p><h2>What's actually happening?</h2><p class="section-subtitle">Three steps. One continuous flow of data.</p></div></div>
+      <div class="steps-grid">
+        <article class="step"><span class="step-number">01</span><div class="step-icon">↘</div><h3>Download</h3><p>The network delivers compressed video data. Its speed determines how quickly new video can arrive.</p></article>
+        <article class="step"><span class="step-number">02</span><div class="step-icon"><span class="buffer-glyph"><i></i><i></i><i></i><i></i></span></div><h3>Buffer</h3><p>The player temporarily stores incoming data as playable video, up to its buffer capacity.</p></article>
+        <article class="step"><span class="step-number">03</span><div class="step-icon">▶</div><h3>Play</h3><p>Playback consumes the stored video continuously. If the reserve reaches zero, playback stalls.</p></article>
+      </div>
+      <div class="equation-panel"><div><span class="eyebrow">THE SIMPLE MODEL</span><h3>Buffer change rate</h3></div><div class="equation">Download speed <span>/</span> Video bitrate <span>− 1</span></div><p>A positive result means the buffer grows during playback. Zero means it stays roughly level. A negative result means it drains.</p></div>
+      <div class="examples-row"><div><i class="example-dot green"></i><span><strong>20 / 5 = 4×</strong> · Buffer grows</span></div><div><i class="example-dot amber"></i><span><strong>5 / 5 = 1×</strong> · Buffer stays level</span></div><div><i class="example-dot red"></i><span><strong>2 / 5 = 0.4×</strong> · Buffer drains</span></div></div>
+      <p class="model-note"><strong>Model assumption:</strong> This is a simplified constant-bitrate model. Real streaming uses chunks, adaptive bitrate selection, variable-bitrate encoding, protocol overhead and player-specific buffering rules. The simulation expresses the buffer in seconds of playable video; incoming data is converted using download speed ÷ video bitrate.</p>
+    </section>
+
+    <section class="about-section section-wrap" id="about"><div class="about-inner"><div><p class="eyebrow">04 / ABOUT BUFFER LAB</p><h2>Make the invisible<br>part visible.</h2></div><div><p>Buffer Lab turns an everyday interruption into an experiment. Change the network, change the video, and observe the relationship between incoming data and playback consumption.</p><p class="about-foot">A self-contained browser simulation. No account. No API. No backend.</p></div></div></section>
+  </main>
+  <footer><a class="brand footer-brand" href="#top"><span class="brand-mark">B.</span><strong>BUFFER LAB</strong></a><span>WHAT HAPPENS BETWEEN PLAY AND PLAYBACK.</span><a href="#top">BACK TO TOP ↑</a></footer>
+  <script src="simulation.js"></script><script src="graph.js"></script><script src="script.js"></script>
+</body>
+</html>
