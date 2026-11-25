@@ -67,5 +67,3 @@ All local references are relative, so the site can be hosted as a static GitHub 
 - The simulator does not fetch or play an actual video stream.
 - Google Fonts require an internet connection; fallback fonts work offline.
 
-## AI assistance disclosure
-AI assistance was used to help draft and implement parts of the code and documentation. The project should be reviewed, tested and understood by its submitting team before presentation. Do not claim independent authorship of AI-assisted portions.
